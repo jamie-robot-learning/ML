@@ -1,48 +1,48 @@
-import gensim
+import codecs
 import logging
-import helper
-from sklearn.manifold import TSNE
+
+import gensim
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import codecs
+from sklearn.manifold import TSNE
 
-import matplotlib
+from util import read_ci
+from util import read_shi
+
 zhfont1 = matplotlib.font_manager.FontProperties(fname='/System/Library/Fonts/STHeiti Light.ttc')
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 
 def build_phrases():
-    data = list(helper.load_data_from_file().values())
 
-    sentence_stream = helper.create_sent_stream(data, False)
+    ci_sentence_stream = read_ci.build_ci_sentences()
+    shi_sentence_stream = read_shi.build_shi_sentences()
+    sentence_stream = ci_sentence_stream + shi_sentence_stream
 
-    phrases = gensim.models.Phrases(sentence_stream, min_count=10, threshold=100)
+    phrases = gensim.models.Phrases(sentence_stream, min_count=5, threshold=100)
     bigram = gensim.models.phrases.Phraser(phrases)
 
-    # vocab = dict()
-    # ssss = 0
-    # for phrase, score in phrases.export_phrases(sentence_stream):
-    #     vocab[phrase.decode('utf-8')] = score
-    #     ssss += score
-    #
-    # sorted_dic = [(k, vocab[k]) for k in sorted(vocab, key=vocab.get, reverse=True)]
-    #
-    # print(sorted_dic)
-    # print(len(sorted_dic))
-    # print('sum:' + str(ssss))
-    # return
-    #
-    # with open('phrase.txt', 'w') as f:
-    #     f.write(s)
-    #     f.close()
+    # Following code for printing out the tokenized vocab
+    vocab = dict()
+    ssss = 0
+    for phrase, score in phrases.export_phrases(sentence_stream):
+        vocab[phrase.decode('utf-8')] = score
+        ssss += score
+
+    sorted_dic = [(k, vocab[k]) for k in sorted(vocab, key=vocab.get, reverse=True)]
+
+    print(sorted_dic)
+    print(len(sorted_dic))
+    print('sum:' + str(ssss))
 
     return bigram, sentence_stream
 
 
 def load_model():
     try:
-        model = gensim.models.Word2Vec.load('vec.mdl')
+        model = gensim.models.Word2Vec.load('./data/vec.mdl')
         return model
 
     except FileNotFoundError:
@@ -50,8 +50,8 @@ def load_model():
         bigram, sentence_stream = build_phrases()
         corpus = list(bigram[sentence_stream])
 
-        model = gensim.models.Word2Vec(corpus, min_count=5, size=100, workers=4)
-        model.save('vec.mdl')
+        model = gensim.models.Word2Vec(corpus, min_count=10, size=100, workers=4, window=8, sg=1)
+        model.save('./data/vec.mdl')
 
     return model
 
@@ -141,7 +141,7 @@ def optimaze_model():
 
     return
 
-#print(model.wv.vocab.keys())
+# print(model.wv.vocab.keys())
 
 
 #plot_vocab_with_tsne(model)
@@ -152,3 +152,8 @@ print(model.wv.most_similar(positive=['东', '日'], negative=['西']))
 print(model.wv.most_similar(positive=['绿', '竹'], negative=['杨']))
 
 #optimaze_model()
+
+# build_phrases()
+# shi = read_shi.load_data_from_file()
+#
+# print(shi['李显'])
