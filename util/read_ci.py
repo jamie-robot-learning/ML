@@ -93,11 +93,13 @@ def load_data_from_file(file_name='./data/ci.dat'):
     try:
         with open(file_name, 'rb') as f:
             # load the object from the file into var b
+            print('Loading ci from file: ' + file_name)
             data = pickle.load(f)
             f.close()
 
             return data
     except FileNotFoundError:
+        print('Creating new ci data list...')
         return load_and_save_data()
 
 
