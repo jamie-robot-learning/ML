@@ -1,18 +1,47 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-from matplotlib.font_manager import FontManager
-import subprocess
+from w2v_shici_util import shi_ci_util
+from shi_gen_util import shi_util
 
-fm = FontManager()
-mat_fonts = set(f.name for f in fm.ttflist)
+from seq2seq import shi_generator
+import numpy as np
 
-output = subprocess.check_output(
-    'fc-list :lang=zh -f "%{family}\n"', shell=True)
-# print '*' * 10, '系统可用的中文字体', '*' * 10
-# print output
-zh_fonts = set(f.split(',', 1)[0] for f in output.split('\n'))
-available = mat_fonts & zh_fonts
+# vocab = data_util.load_w2i_mapping()
+# print(vocab[0]['昆'])
 
-print('*' * 10, '可用的字体', '*' * 10)
-for f in available:
-    print(f)
+
+# shi_sentence_stream = read_shi.build_shi_sentences()
+# ci_sentence_stream = read_ci.build_ci_sentences()
+# print(len(ci_sentence_stream))
+# print(ci_sentence_stream[:20])
+
+# s = data_util.convert_into_int_list()
+# print(s[:200])
+#
+# shi_sentence_stream = read_shi.build_shi_sentences()
+# w2i, i2w = data_util.load_w2i_mapping()
+
+# source_gen = data_util.load_shi_sentence_stream(False)
+# target_gen = data_util.load_shi_sentence_stream(False)
+# next(target_gen)
+#
+# (w2i, i2w) = data_util.load_vocab_mapping()
+#
+# (_, source), (_, target) = next(source_gen), next(target_gen)
+# print(source)
+# print(target)
+
+# translate.read_data(shi_sentence_stream, w2i)
+
+shi_generator.train()
+
+# shi_generator.decode()
+# d = shi_generator.read_data()
+# shi = read_shi.build_shi_sentences()
+
+# shi = shi_util.read_data()
+# print(shi[0])
+# shi_generator.decode()
+
+#
+# b = np.arange(24).reshape(4,6)
+# print(b)
+# print(np.argmax(b,axis=1))
